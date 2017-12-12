@@ -190,12 +190,14 @@ class Gws::Monitor::TopicsController < ApplicationController
     @item.attend_group_ids = []
     @item.readable_group_ids = []
     @item.readable_member_ids  = []
-    @item.readable_custom_group_ids  = []
+    @item.readable_custom_group_ids = []
     @item.state_of_the_answers_hash = {}
     @item.file_ids = []
     @item.created = nil
     @item.updated = nil
-    @model = @item.dup()
+    @item.user_ids = [@cur_user.id]
+    @item.group_ids = [@cur_group.id]
+    @model = @item.dup
     raise "403" unless @model.allowed?(:edit, @cur_user, site: @cur_site)
     render file: :new
   end
