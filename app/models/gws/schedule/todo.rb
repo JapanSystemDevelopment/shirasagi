@@ -62,6 +62,18 @@ class Gws::Schedule::Todo
     ])
   }
 
+  scope :custom_order, ->(key) {
+    if key.start_with?('created_')
+      all.reorder(created: key.end_with?('_asc') ? 1 : -1)
+    elsif key.start_with?('updated_')
+      all.reorder(updated: key.end_with?('_asc') ? 1 : -1)
+    elsif key.start_with?('end_at_')
+      all.reorder(end_at: key.end_with?('_asc') ? 1 : -1)
+    else
+      all
+    end
+  }
+
   def reminder_user_ids
     member_ids
   end
@@ -100,6 +112,11 @@ class Gws::Schedule::Todo
 
   def todo_state_options
     %w(unfinished finished both).map { |v| [I18n.t("gws/schedule/todo.options.todo_state.#{v}"), v] }
+  end
+
+  def sort_options
+    %w(updated_desc updated_asc created_desc created_asc end_at_desc end_at_asc).map { |k|
+      [I18n.t("gws/schedule/todo.options.sort.#{k}"), k] }
   end
 
   def allowed?(action, user, opts = {})
